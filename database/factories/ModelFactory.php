@@ -33,7 +33,7 @@ $factory->define(App\book::class, function (Faker\Generator $faker) {
         'category_id' => function(){
             return factory('App\category')->create()->id;
         },
-        'name' => $faker->title,
+        'name' => $faker->sentence,
         'price' => $faker->numberBetween(500,2500),
         'pages' => $faker->numberBetween(100,5000)
     ];
