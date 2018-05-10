@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\book;
+use App\converters\BooksConverter;
 use Illuminate\Http\Request;
 
 class BooksController extends Controller
@@ -10,32 +11,15 @@ class BooksController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param BooksConverter $converter
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(BooksConverter $converter)
     {
         $books = book::all()->toArray();
 
-        return $this->convertCollections($books);
+        return $converter->convertCollections($books);
 
-    }
-
-    private function convertCollections(array $objects)
-    {
-        return array_map(function ($object){
-            return $this->convert($object);
-        },$objects);
-    }
-
-    private function convert($object)
-    {
-        return [
-            'book name' => $object['name'],
-            'book pages' => $object['pages'],
-            'book price' => $object['price'],
-            'book auther' => $object['user_id'],
-            'book category' => $object['category_id']
-        ];
     }
 
     /**
@@ -62,12 +46,13 @@ class BooksController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param book $book
+     * @param BooksConverter $converter
+     * @return array
      */
-    public function show(book $book)
+    public function show(book $book , BooksConverter $converter)
     {
-        return $this->convert($book);
+        return $converter->convert($book);
     }
 
     /**
