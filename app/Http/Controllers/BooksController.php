@@ -6,7 +6,7 @@ use App\book;
 use App\converters\BooksConverter;
 use Illuminate\Http\Request;
 
-class BooksController extends Controller
+class BooksController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +18,7 @@ class BooksController extends Controller
     {
         $books = book::all()->toArray();
 
-        return $converter->convertCollections($books);
-
+        return $this->response($converter->convertCollections($books));
     }
 
     /**
@@ -52,7 +51,7 @@ class BooksController extends Controller
      */
     public function show(book $book , BooksConverter $converter)
     {
-        return $converter->convert($book);
+        return $this->response($converter->convert($book));
     }
 
     /**
