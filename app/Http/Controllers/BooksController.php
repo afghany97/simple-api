@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\book;
 use App\converters\BooksConverter;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class BooksController extends ApiController
@@ -51,7 +52,21 @@ class BooksController extends ApiController
      */
     public function show($id , BooksConverter $converter)
     {
-        $book = Book::findOrFail($id);
+        try{
+
+            $book = Book::findOrFail($id);
+
+        }catch(ModelNotFoundException $exception){
+
+            return $this->setStatus(404)->response([
+
+                'successful' => false,
+
+                'error' => [
+                    'message' => 'the object not found.'
+                ]
+            ]);
+        }
 
         return $this->response($converter->convert($book));
     }
