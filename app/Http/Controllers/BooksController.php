@@ -19,7 +19,12 @@ class BooksController extends ApiController
     {
         $books = book::all()->toArray();
 
-        return $this->response($converter->convertCollections($books));
+        return $this->response([
+
+            'successful' => true,
+
+            'data' => $converter->convertCollections($books)
+        ]);
     }
 
     /**
@@ -68,7 +73,12 @@ class BooksController extends ApiController
             ]);
         }
 
-        return $this->response($converter->convert($book));
+        return $this->response([
+
+            'successful' => true,
+
+            'data' =>$converter->convert($book)
+        ]);
     }
 
     /**
