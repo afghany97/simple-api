@@ -45,12 +45,14 @@ class BooksController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param book $book
+     * @param $id
      * @param BooksConverter $converter
      * @return array
      */
-    public function show(book $book , BooksConverter $converter)
+    public function show($id , BooksConverter $converter)
     {
+        $book = Book::findOrFail($id);
+
         return $this->response($converter->convert($book));
     }
 
