@@ -19,12 +19,7 @@ class BooksController extends ApiController
     {
         $books = book::all()->toArray();
 
-        return $this->response([
-
-            'successful' => true,
-
-            'data' => $converter->convertCollections($books)
-        ]);
+        return $this->successfulResponse($converter->convertCollections($books));
     }
 
     /**
@@ -63,22 +58,10 @@ class BooksController extends ApiController
 
         }catch(ModelNotFoundException $exception){
 
-            return $this->setStatus(404)->response([
-
-                'successful' => false,
-
-                'error' => [
-                    'message' => 'the object not found.'
-                ]
-            ]);
+            return $this->setIsSuccessful(false)->setStatus(404)->responseWithError("object not found.!");
         }
 
-        return $this->response([
-
-            'successful' => true,
-
-            'data' =>$converter->convert($book)
-        ]);
+        return $this->successfulResponse($converter->convert($book));
     }
 
     /**

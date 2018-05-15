@@ -6,10 +6,7 @@ class ApiController extends Controller
 {
     private $status = 200;
 
-    public function getStatus()
-    {
-        return $this->status;
-    }
+    private $isSuccessful = true;
 
     public function setStatus($status)
     {
@@ -18,9 +15,40 @@ class ApiController extends Controller
         return $this;
     }
 
-    protected function response(array $data,$headers = [])
+    public function setIsSuccessful($isSuccessful)
+    {
+        $this->isSuccessful = $isSuccessful;
+
+        return $this;
+    }
+
+    private function response(array $data,$headers = [])
     {
         return response()->json($data,$this->status,$headers);
+    }
+
+    protected function successfulResponse(array $data,$headers = [])
+    {
+        return $this->response([
+
+            'successful' => $this->isSuccessful,
+
+            'data' => $data
+
+        ],$headers);
+    }
+
+    protected function responseWithError($message,$headers = [])
+    {
+        return $this->response([
+
+            'successful' => $this->isSuccessful,
+
+            'Error' => [
+                'message' => $message
+            ]
+
+        ],$headers);
     }
 
 }
