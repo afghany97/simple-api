@@ -58,7 +58,7 @@ class BooksController extends ApiController
 
         }catch(ModelNotFoundException $exception){
 
-            return $this->setIsSuccessful(false)->setStatus(404)->responseWithError("object not found.!");
+            return $this->setIsSuccessful(false)->setStatus(static::HTTP_NOT_FOUND)->responseWithError("object not found.!");
         }
 
         return $this->successfulResponse($converter->convert($book));

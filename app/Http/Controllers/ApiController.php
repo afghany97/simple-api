@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 class ApiController extends Controller
 {
+    const HTTP_NOT_FOUND = 404;
+
     private $status = 200;
 
     private $isSuccessful = true;
