@@ -59,7 +59,6 @@ class BooksController extends ApiController
 
         return $this->createdSuccessfully();
     }
-
     /**
      * Display the specified resource.
      *
