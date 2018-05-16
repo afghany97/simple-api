@@ -18,6 +18,12 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+
+        Schema::create('books_categories', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('book_id');
+            $table->unsignedInteger('category_id');
+        });
     }
 
     /**
@@ -28,5 +34,6 @@ class CreateCategoriesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('categories');
+        Schema::dropIfExists('books_categories');
     }
 }
