@@ -8,6 +8,8 @@ class ApiController extends Controller
 
     const HTTP_CREATED = 201;
 
+    const HTTP_PRECONDITION_FAILED = 412;
+
     private $status = 200;
 
     private $isSuccessful = true;
@@ -26,40 +28,44 @@ class ApiController extends Controller
         return $this;
     }
 
-    private function response(array $data,$headers = [])
+    private function response(array $data, $headers = [])
     {
-        return response()->json($data,$this->status,$headers);
+        return response()->json($data, $this->status, $headers);
     }
 
-    protected function successfulResponse(array $data,$headers = [])
+    protected function successfulResponse(array $data, $headers = [])
     {
         return $this->response([
 
             'successful' => $this->isSuccessful,
 
-            'data' => $data
+            'data' => $data,
 
-        ],$headers);
+            'status_code' => $this->status
+
+        ], $headers);
     }
 
-    protected function responseWithError($message,$headers = [])
+    protected function responseWithError($message, $headers = [])
     {
         return $this->response([
 
             'successful' => !$this->isSuccessful,
 
             'Error' => [
-                'message' => $message
+                'message' => $message,
+
+                'status_code' => $this->status
             ]
 
-        ],$headers);
+        ], $headers);
     }
 
     protected function createdSuccessfully($message = 'created successfully.')
     {
         return $this->setStatus(static::HTTP_CREATED)->created($message);
     }
-    
+
     private function created($message)
     {
         return $this->response([
@@ -69,6 +75,11 @@ class ApiController extends Controller
             'successful' => $this->isSuccessful
 
         ]);
+    }
+
+    protected function invalidPassedParams($message = 'invalid passed params')
+    {
+        return $this->setStatus(static::HTTP_PRECONDITION_FAILED)->responseWithError($message);
     }
 
 }

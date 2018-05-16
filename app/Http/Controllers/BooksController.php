@@ -53,11 +53,10 @@ class BooksController extends ApiController
                 return $this->createdSuccessfully();
             }
 
-
-            return $this->responseWithError("invalid passed params .");
+            return $this->invalidPassedParams("invalid passed params .");
         }
 
-        return $this->responseWithError("missing params .");
+        return $this->invalidPassedParams("missing params.");
 
     }
 
