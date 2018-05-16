@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class BooksController extends ApiController
 {
+    public function __construct()
+    {
+        $this->middleware('auth.basic')->only('store');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,12 +39,26 @@ class BooksController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        //
+        if ($this->inComingData()) {
+
+            if ($this->validateData())
+            {
+
+                Book::addBook();
+
+                return $this->createdSuccessfully();
+            }
+
+
+            return $this->responseWithError("invalid passed params .");
+        }
+
+        return $this->responseWithError("missing params .");
+
     }
 
     /**
@@ -50,15 +68,15 @@ class BooksController extends ApiController
      * @param BooksConverter $converter
      * @return array
      */
-    public function show($id , BooksConverter $converter)
+    public function show($id, BooksConverter $converter)
     {
-        try{
+        try {
 
             $book = Book::findOrFail($id);
 
-        }catch(ModelNotFoundException $exception){
+        } catch (ModelNotFoundException $exception) {
 
-            return $this->setIsSuccessful(false)->setStatus(static::HTTP_NOT_FOUND)->responseWithError("object not found.!");
+            return $this->setStatus(static::HTTP_NOT_FOUND)->responseWithError("object not found.!");
         }
 
         return $this->successfulResponse($converter->convert($book));
@@ -67,7 +85,7 @@ class BooksController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -78,8 +96,8 @@ class BooksController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -90,11 +108,31 @@ class BooksController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * @return bool
+     */
+    private function validateData()
+    {
+        $price = preg_match('/[0-9]/', request('price'), $matches);
+
+        $pages = preg_match('/[0-9]/', request('pages'), $matches);
+
+        return !(empty($price) || empty($pages));
+    }
+
+    /**
+     * @return bool
+     */
+    private function inComingData()
+    {
+        return request()->has('name') && request()->has('price') && request()->has('pages');
     }
 }

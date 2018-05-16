@@ -6,6 +6,8 @@ class ApiController extends Controller
 {
     const HTTP_NOT_FOUND = 404;
 
+    const HTTP_CREATED = 201;
+
     private $status = 200;
 
     private $isSuccessful = true;
@@ -44,13 +46,29 @@ class ApiController extends Controller
     {
         return $this->response([
 
-            'successful' => $this->isSuccessful,
+            'successful' => !$this->isSuccessful,
 
             'Error' => [
                 'message' => $message
             ]
 
         ],$headers);
+    }
+
+    protected function createdSuccessfully($message = 'created successfully.')
+    {
+        return $this->setStatus(static::HTTP_CREATED)->created($message);
+    }
+    
+    private function created($message)
+    {
+        return $this->response([
+
+            'message' => $message,
+
+            'successful' => $this->isSuccessful
+
+        ]);
     }
 
 }

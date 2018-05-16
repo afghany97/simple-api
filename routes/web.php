@@ -17,3 +17,4 @@ Route::get('/', function () {
 
 Route::get('/books','BooksController@index');
 Route::get('/books/{book}','BooksController@show');
+Route::post('/books','BooksController@store');
