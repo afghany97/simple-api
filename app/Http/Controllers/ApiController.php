@@ -82,4 +82,9 @@ class ApiController extends Controller
         return $this->setStatus(static::HTTP_PRECONDITION_FAILED)->responseWithError($message);
     }
 
+    protected function NotFound($message = 'not found ')
+    {
+        return $this->setStatus(static::HTTP_NOT_FOUND)->responseWithError($message);
+    }
+
 }

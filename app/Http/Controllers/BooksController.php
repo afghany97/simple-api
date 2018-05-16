@@ -6,6 +6,7 @@ use App\book;
 use App\converters\BooksConverter;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class BooksController extends ApiController
 {
@@ -43,21 +44,20 @@ class BooksController extends ApiController
      */
     public function store()
     {
-        if ($this->inComingData()) {
+        try{
+            $this->validate(request(), [
+                'name' => 'required|string',
+                'price' => 'required|numeric',
+                'pages' => 'required|numeric'
+            ]);
+        }catch (ValidationException $exception){
 
-            if ($this->validateData())
-            {
-
-                Book::addBook();
-
-                return $this->createdSuccessfully();
-            }
-
-            return $this->invalidPassedParams("invalid passed params .");
+            return $this->invalidPassedParams();
         }
 
-        return $this->invalidPassedParams("missing params.");
+        Book::addBook();
 
+        return $this->createdSuccessfully();
     }
 
     /**
@@ -75,7 +75,7 @@ class BooksController extends ApiController
 
         } catch (ModelNotFoundException $exception) {
 
-            return $this->setStatus(static::HTTP_NOT_FOUND)->responseWithError("object not found.!");
+            return $this->NotFound('object not found.!');
         }
 
         return $this->successfulResponse($converter->convert($book));
@@ -113,25 +113,5 @@ class BooksController extends ApiController
     public function destroy($id)
     {
         //
-    }
-
-    /**
-     * @return bool
-     */
-    private function validateData()
-    {
-        $price = preg_match('/[0-9]/', request('price'), $matches);
-
-        $pages = preg_match('/[0-9]/', request('pages'), $matches);
-
-        return !(empty($price) || empty($pages));
-    }
-
-    /**
-     * @return bool
-     */
-    private function inComingData()
-    {
-        return request()->has('name') && request()->has('price') && request()->has('pages');
     }
 }
