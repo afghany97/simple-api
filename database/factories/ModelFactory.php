@@ -24,14 +24,10 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Book::class, function (Faker\Generator $faker) {
-    static $password;
 
     return [
         'user_id' => function(){
             return factory('App\User')->create()->id;
-        },
-        'category_id' => function(){
-            return factory('App\Category')->create()->id;
         },
         'name' => $faker->sentence,
         'price' => $faker->numberBetween(500,2500),
@@ -41,7 +37,6 @@ $factory->define(App\Book::class, function (Faker\Generator $faker) {
 
 
 $factory->define(App\Category::class, function (Faker\Generator $faker) {
-    static $password;
 
     return [
         'name' => $faker->word,
