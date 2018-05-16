@@ -10,9 +10,15 @@ use Illuminate\Validation\ValidationException;
 
 class BooksController extends ApiController
 {
-    public function __construct()
+    /**
+     * @var BooksConverter
+     */
+    private $converter;
+
+    public function __construct(BooksConverter $converter)
     {
         $this->middleware('auth.basic')->only('store');
+        $this->converter = $converter;
     }
     /**
      * Display a listing of the resource.
@@ -20,11 +26,11 @@ class BooksController extends ApiController
      * @param BooksConverter $converter
      * @return \Illuminate\Http\Response
      */
-    public function index(BooksConverter $converter)
+    public function index()
     {
         $books = book::all()->toArray();
 
-        return $this->successfulResponse($converter->convertCollections($books));
+        return $this->successfulResponse($this->converter->convertCollections($books));
     }
 
     /**
@@ -66,7 +72,7 @@ class BooksController extends ApiController
      * @param BooksConverter $converter
      * @return array
      */
-    public function show($id, BooksConverter $converter)
+    public function show($id)
     {
         try {
 
@@ -77,7 +83,7 @@ class BooksController extends ApiController
             return $this->NotFound('object not found.!');
         }
 
-        return $this->successfulResponse($converter->convert($book));
+        return $this->successfulResponse($this->converter->convert($book));
     }
 
     /**
