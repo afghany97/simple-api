@@ -21,3 +21,4 @@ Route::post('/books','BooksController@store');
 
 Route::get('/categories','CategoiresController@index');
 Route::get('/categories/{id}','CategoiresController@show');
+Route::get('/books/{id}/categories','CategoiresController@index');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Book;
 use App\Category;
 use App\converters\CategoriesConverter;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,9 +23,9 @@ class CategoiresController extends ApiController
         $this->converter = $converter;
     }
 
-    public function index()
+    public function index($id = null)
     {
-        $categories = Category::all()->toArray();
+        $categories = $id ? collect(Book::find($id)->categories)->toArray() : Category::all()->toArray();
 
         return $this->successfulResponse($this->converter->convertCollections($categories));
 
